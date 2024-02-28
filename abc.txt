@@ -1,0 +1,2 @@
+fee = 100000000
+FEE_PER_KB = 80000000 sẽ mất 0.5 doge
