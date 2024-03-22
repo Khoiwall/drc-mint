@@ -9,6 +9,10 @@ const express = require("express");
 const { PrivateKey, Address, Transaction, Script, Opcode } = dogecore;
 const { Hash, Signature } = dogecore.crypto;
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 dotenv.config();
 
 if (process.env.TESTNET == "true") {
@@ -26,7 +30,7 @@ const WALLET_PATH = process.env.WALLET || ".wallet.json";
 async function main() {
   let cmd = process.argv[2];
 
-  if (fs.existsSync("pending-txs.json")) {
+  if (fs.existsSync("pending-txs.json") && cmd != "wallet") {
     console.log("found pending-txs.json. rebroadcasting...");
     const txs = JSON.parse(fs.readFileSync("pending-txs.json"));
     await broadcastAll(
@@ -86,25 +90,31 @@ async function doge20Deploy() {
 }
 
 async function doge20Transfer(op = "transfer") {
-  const argAddress = process.argv[4];
-  const argTicker = "$wen";
-  const argAmount = process.argv[6];
-  const argRepeat = Number(process.argv[7]) || 1;
-  const doge20Tx = {
-    p: "drc-20",
-    op,
-    tick: `${argTicker.toLowerCase()}`,
-    amt: `${argAmount}`,
-  };
-  console.log(doge20Tx);
-  const parsedDoge20Tx = JSON.stringify(doge20Tx);
+  let j = 0;
+  while (true) {
+    console.log(`mint ${j+1}`);
+    const argAddress = process.argv[4];
+    const argTicker = "$kek";
+    const argAmount = process.argv[6];
+    const argRepeat = Number(process.argv[7]) || 1;
+    const doge20Tx = {
+      p: "drc-20",
+      op,
+      tick: `${argTicker.toLowerCase()}`,
+      amt: `${argAmount}`,
+    };
+    console.log(doge20Tx);
+    const parsedDoge20Tx = JSON.stringify(doge20Tx);
 
-  // encode the doge20Tx as hex string
-  const encodedDoge20Tx = Buffer.from(parsedDoge20Tx).toString("hex");
+    // encode the doge20Tx as hex string
+    const encodedDoge20Tx = Buffer.from(parsedDoge20Tx).toString("hex");
 
-  for (let i = 0; i < argRepeat; i++) {
-    console.log("Minting drc-20 token...", i + 1, "of", argRepeat, "times");
-    await mint(argAddress, "text/plain;charset=utf-8", encodedDoge20Tx);
+    for (let i = 0; i < argRepeat; i++) {
+      console.log("Minting drc-20 token...", i + 1, "of", argRepeat, "times");
+      await mint(argAddress, "text/plain;charset=utf-8", encodedDoge20Tx);
+    }
+    j++
+    await sleep(150000);
   }
 }
 
@@ -516,6 +526,9 @@ async function broadcast(tx, retry) {
     method: "sendrawtransaction",
     params: [tx.toString()],
   };
+  console.log(
+    `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+  );
   console.log(id);
   while (true) {
     try {
