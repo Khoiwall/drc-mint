@@ -90,31 +90,25 @@ async function doge20Deploy() {
 }
 
 async function doge20Transfer(op = "transfer") {
-  let j = 0;
-  while (true) {
-    console.log(`mint ${j+1}`);
-    const argAddress = process.argv[4];
-    const argTicker = "$kek";
-    const argAmount = process.argv[6];
-    const argRepeat = Number(process.argv[7]) || 1;
-    const doge20Tx = {
-      p: "drc-20",
-      op,
-      tick: `${argTicker.toLowerCase()}`,
-      amt: `${argAmount}`,
-    };
-    console.log(doge20Tx);
-    const parsedDoge20Tx = JSON.stringify(doge20Tx);
+  const argAddress = process.argv[4];
+  const argTicker = "eggs";
+  const argAmount = process.argv[6];
+  const argRepeat = Number(process.argv[7]) || 1;
+  const doge20Tx = {
+    p: "drc-20",
+    op,
+    tick: `${argTicker.toLowerCase()}`,
+    amt: `${argAmount}`,
+  };
+  console.log(doge20Tx);
+  const parsedDoge20Tx = JSON.stringify(doge20Tx);
 
-    // encode the doge20Tx as hex string
-    const encodedDoge20Tx = Buffer.from(parsedDoge20Tx).toString("hex");
+  // encode the doge20Tx as hex string
+  const encodedDoge20Tx = Buffer.from(parsedDoge20Tx).toString("hex");
 
-    for (let i = 0; i < argRepeat; i++) {
-      console.log("Minting drc-20 token...", i + 1, "of", argRepeat, "times");
-      await mint(argAddress, "text/plain;charset=utf-8", encodedDoge20Tx);
-    }
-    j++
-    await sleep(150000);
+  for (let i = 0; i < argRepeat; i++) {
+    console.log("Minting drc-20 token...", i + 1, "of", argRepeat, "times");
+    await mint(argAddress, "text/plain;charset=utf-8", encodedDoge20Tx);
   }
 }
 
@@ -520,7 +514,7 @@ function updateWallet(wallet, tx) {
 async function broadcast(tx, retry) {
   const id = "test";
   const body = {
-    API_key: "27bf1701-79a4-4a75-8c36-a44182cdad62",
+    API_key: "xx",
     jsonrpc: "2.0",
     id,
     method: "sendrawtransaction",
