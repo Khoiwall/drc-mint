@@ -91,7 +91,7 @@ async function doge20Deploy() {
 
 async function doge20Transfer(op = "transfer") {
   const argAddress = process.argv[4];
-  const argTicker = "eggs";
+  const argTicker = process.env.TICKER;
   const argAmount = process.argv[6];
   const argRepeat = Number(process.argv[7]) || 1;
   const doge20Tx = {
